@@ -1,0 +1,15 @@
+<?php include __DIR__ . '/_nav.php'; ?>
+<div class="page-head"><div><h1 class="page-title">Retención de socios</h1><p class="page-sub">Puntaje de riesgo de abandono según asistencia, vencimiento y saldo. Contacta antes de perderlos.</p></div>
+  <div class="d-flex gap-2 flex-wrap"><div class="seg"><a href="<?= url('crm/retencion') ?>" class="<?= !$nivel ? 'on' : '' ?>">Todos <span class="cnt"><?= $n_alto + $n_medio ?></span></a><a href="<?= url('crm/retencion?nivel=alto') ?>" class="<?= $nivel === 'alto' ? 'on' : '' ?>">Riesgo alto <span class="cnt bad"><?= $n_alto ?></span></a><a href="<?= url('crm/retencion?nivel=medio') ?>" class="<?= $nivel === 'medio' ? 'on' : '' ?>">Medio <span class="cnt"><?= $n_medio ?></span></a></div>
+    <a href="<?= url('crm/campanas?seg=riesgo') ?>" class="btn btn-brand"><i class="bi bi-megaphone-fill"></i> Campaña a riesgo alto</a></div></div>
+<div class="risk-legend card-x mb-3 py-2 small text-muted"><i class="bi bi-info-circle"></i> El puntaje (0–100) suma: días sin asistir, caída de visitas frente al mes anterior, membresía por vencer o vencida y saldo pendiente. <b class="text-danger">Alto ≥ 60</b> · <b class="text-warning">Medio 30–59</b>.</div>
+<div class="card-x p-0"><div class="table-responsive"><table class="table tbl align-middle mb-0 tbl-pad">
+  <thead><tr><th>Socio</th><th>Riesgo</th><th class="d-none d-md-table-cell">Por qué</th><th class="d-none d-lg-table-cell">Actividad</th><th class="text-end">Acciones</th></tr></thead><tbody>
+  <?php if (!$rows): ?><tr><td colspan="5" class="text-center text-muted py-5"><i class="bi bi-emoji-smile fs-2 d-block mb-1 text-success"></i>No hay socios en riesgo con este filtro.</td></tr><?php endif; ?>
+  <?php foreach ($rows as $x): ?><tr>
+    <td><a class="d-flex align-items-center gap-2 text-reset text-decoration-none" href="<?= url('crm/socio/' . $x['id']) ?>"><span class="avatar sm"><?= e(iniciales($x['nombres'], $x['apellidos'])) ?></span><span><b><?= e($x['nombres'] . ' ' . $x['apellidos']) ?></b><div class="small text-muted"><?= e($x['plan']) ?> · vence <?= fdate($x['fecha_fin']) ?></div></span></a></td>
+    <td style="min-width:120px"><div class="risk-bar <?= $x['nivel'] ?>"><span style="width:<?= $x['puntaje'] ?>%"></span></div><small class="fw-bold"><?= $x['puntaje'] ?>/100 · <?= ucfirst($x['nivel']) ?></small></td>
+    <td class="d-none d-md-table-cell small"><?php foreach ($x['motivos'] as $m): ?><span class="badge-soft secondary me-1 mb-1 d-inline-block"><?= e($m) ?></span><?php endforeach; ?></td>
+    <td class="d-none d-lg-table-cell small text-muted">Última visita: <?= $x['ult_visita'] ? fdate($x['ult_visita']) : '<span class="text-danger">nunca</span>' ?><br><?= (int)$x['v30'] ?> visitas en 30 d</td>
+    <td class="text-end text-nowrap"><?php if ($x['wa']): ?><a href="<?= e($x['wa']) ?>" target="_blank" rel="noopener" class="icon-sm wa" title="WhatsApp" data-log="<?= $x['id'] ?>"><i class="bi bi-whatsapp"></i></a><?php endif; ?>
+      <a href="<?= url('crm/socio/' . $x['id']) ?>" class="icon-sm" title="Ficha 360°"><i class="bi bi-person-lines-fill"></i></a></td></tr><?php endforeach; ?></tbody></table></div></div>

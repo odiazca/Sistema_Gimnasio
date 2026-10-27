@@ -1,0 +1,13 @@
+<div class="page-head"><div><h1 class="page-title">Anulaciones</h1><p class="page-sub">Registro auditable de pagos y ventas anulados, con el motivo y quién los anuló.</p></div>
+  <div class="seg"><a href="<?= url('anulaciones') ?>" class="<?= !$tipo ? 'on' : '' ?>">Todas</a><a href="<?= url('anulaciones?tipo=pago') ?>" class="<?= $tipo === 'pago' ? 'on' : '' ?>">Pagos</a><a href="<?= url('anulaciones?tipo=venta') ?>" class="<?= $tipo === 'venta' ? 'on' : '' ?>">Ventas</a></div></div>
+<div class="card-x mb-3 py-3 d-flex flex-wrap gap-4"><div><div class="small text-muted">Anulaciones</div><div class="fs-4 fw-bold"><?= count($rows) ?></div></div><div><div class="small text-muted">Monto anulado</div><div class="fs-4 fw-bold text-danger"><?= money($total) ?></div></div></div>
+<div class="card-x p-0"><div class="table-responsive"><table class="table tbl align-middle mb-0 tbl-pad">
+  <thead><tr><th>Anulado</th><th>Documento</th><th class="d-none d-md-table-cell">Detalle</th><th class="text-end">Monto</th><th>Motivo</th><th class="d-none d-lg-table-cell">Por</th></tr></thead><tbody>
+  <?php if (!$rows): ?><tr><td colspan="6" class="text-center text-muted py-5"><i class="bi bi-shield-check fs-2 d-block text-success"></i>No hay anulaciones registradas.</td></tr><?php endif; ?>
+  <?php foreach ($rows as $a): $d = json_decode((string)$a['detalle'], true) ?: []; ?><tr>
+    <td><?= fdate($a['fecha'], 'd/m/Y') ?><br><small class="text-muted"><?= fdate($a['fecha'], 'H:i') ?></small></td>
+    <td><span class="badge-soft <?= $a['tipo'] === 'pago' ? 'info' : 'warning' ?>"><?= $a['tipo'] === 'pago' ? 'Pago' : 'Venta' ?></span> <b>N° <?= sprintf('%06d', $a['ref_id']) ?></b><br><small class="text-muted">del <?= fdate($a['fecha_original'], 'd/m/Y H:i') ?></small></td>
+    <td class="d-none d-md-table-cell small"><?php if ($a['tipo'] === 'pago'): ?><?= e($d['socio'] ?? '') ?><br><span class="text-muted"><?= e($d['concepto'] ?? '') ?> · <?= e(ucfirst((string)$a['metodo'])) ?></span>
+      <?php else: ?><?= e($d['cliente'] ?? '') ?><br><span class="text-muted"><?= e(implode(', ', array_map(fn($i) => $i['cantidad'] . '× ' . $i['nombre'], $d['items'] ?? []))) ?></span><?php endif; ?></td>
+    <td class="text-end fw-bold text-danger text-nowrap"><?= money($a['monto']) ?></td><td class="small"><?= e($a['motivo']) ?></td><td class="d-none d-lg-table-cell small text-muted"><?= e($a['usuario'] ?: '—') ?></td></tr><?php endforeach; ?></tbody></table></div></div>
+<p class="small text-muted mt-2"><i class="bi bi-info-circle"></i> Al anular un pago, el saldo de la membresía vuelve a aparecer como deuda. Al anular una venta, el stock regresa al inventario. Si el turno de caja ya estaba cerrado, su arqueo guardado no cambia.</p>

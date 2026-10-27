@@ -1,0 +1,37 @@
+=====================================================
+ FITCORE GYM - CREDENCIALES DEL SISTEMA
+=====================================================
+
+URL local (Laragon):   http://localhost/sys_gimnasio
+Instalador (1 vez):    http://localhost/sys_gimnasio/install.php
+
+--- USUARIOS DEL SISTEMA (creados por el instalador) ---
+
+Administrador (acceso total)
+  Usuario:     admin
+  Contrasena:  admin123
+
+Recepcion (socios, pagos, asistencia, ventas, caja, CRM)
+  Usuario:     recepcion
+  Contrasena:  recep123
+
+--- BASE DE DATOS (config/config.php) ---
+
+  Servidor:    localhost
+  Puerto:      3306
+  Base datos:  sys_gimnasio
+  Usuario:     root
+  Contrasena:  (vacia en Laragon)
+
+--- EN HOSTING (Hostinger u otro) ---
+  Usa los datos que cree el panel (hPanel > Bases de datos):
+  nombre de BD, usuario y contrasena de MySQL propios.
+  Servidor: localhost
+
+--- RECOMENDACIONES DE SEGURIDAD ---
+  1. Cambia las contrasenas de admin y recepcion al primer ingreso
+     (menu superior > Mi perfil / Usuarios y roles).
+  2. Usa una contrasena fuerte para MySQL en produccion.
+  3. Elimina install.php del servidor despues de instalar.
+  4. Guarda este archivo en un lugar privado; no lo subas al hosting.
+=====================================================
